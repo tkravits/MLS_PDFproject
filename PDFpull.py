@@ -113,7 +113,7 @@ df = df.sort_values(by='Listing Price', ascending=True)
 # using seaborn to graph the data, the x axis is the Price Range, the y axis is the Concession Percentage, and
 # the type of graph is a category plot.
 g = sns.catplot(x="Price Range", y="Concession %", hue="Price Range", data=df,
-                height=6, kind='swarm', palette="pastel")
+                height=6, kind='swarm', palette="muted")
 g.despine(left=True)
 
 # sets the title
