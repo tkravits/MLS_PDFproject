@@ -1,6 +1,5 @@
 # This is designed to pull meaningful information from MLS pdfs and put them into a dataframe for analysis
-# TODO - so there are some sold prices that are lower that are not coming up as concessions. look at 1845 upland ave in
-# Boulder, found on IRESis - Report Window 8 6-1
+
 import pdfplumber
 import glob
 import pandas as pd
@@ -30,9 +29,10 @@ while True:
 # converts the list into a dataframe
 df = pd.DataFrame(df)
 
-# Use negative look behind .Basically anything after "Concession Amt:" will be pulled
+# Use negative look behind basically anything after "Concession Amt:" will be pulled
 #df['Concession Amt'] = df.apply(''.join, axis=1).str.extract('((?<=Concession Amt: ).*$)')
 df['Concession Amt'] = df.apply(''.join, axis=1).str.extract('((?<=Sold Price: ).*$)')
+
 # Replace $ with a white space
 df['Concession Amt']=df['Concession Amt'].str.replace('$','')
 # Splits the Concession Amount will all the other information to create a stand alone number
@@ -59,8 +59,8 @@ df[['Address', 'Other']] = df['Other'].str.split('Locale', n=1, expand=True)
 df['Address'] = df['Address'].str.rstrip()
 
 # Splits the Address so that the code can figure out if a property is sold
-# TODO - Need to split the Address so it's a standalone address
 df[['Address', 'Status']] = df['Address'].str.rsplit(' ', n=1, expand=True)
+df[['Address', 'Type']] = df['Address'].str.split('(?<=\d{5})\s+', expand=True)
 
 # Calculates the percentage conceeded by a property based on the Listing Price
 df['Concession %'] = ((df['Listing Price'] - (df['Concession Amt'])).divide(df['Listing Price']) * 100)
